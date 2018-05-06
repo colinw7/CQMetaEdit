@@ -1,0 +1,2 @@
+# CQMetaEdit
+Qt Meta Editor
