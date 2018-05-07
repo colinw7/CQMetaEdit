@@ -1,2 +1,1 @@
-# CQMetaEdit
-Qt Meta Editor
+doc/README.md
