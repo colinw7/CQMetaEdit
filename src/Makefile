@@ -591,7 +591,10 @@ compiler_clean: compiler_moc_header_clean
 		../../CUtil/include/CPen.h \
 		../../CQUtil/include/CQUtilMeta.h \
 		../include/CQPicker.h \
-		CQLinkLabel.h
+		CQLinkLabel.h \
+		svg/icon_svg.h \
+		../../CQUtil/include/CQPixmapCache.h \
+		svg/image_svg.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ../obj/CQMetaEdit.o CQMetaEdit.cpp
 
 ../obj/CQMetaEditModel.o: CQMetaEditModel.cpp CQMetaEditModel.h \
@@ -1323,7 +1326,11 @@ compiler_clean: compiler_moc_header_clean
 		../../CUtil/include/CAutoPtr.h \
 		../../CMath/include/CGenGradient.h \
 		../../CUtil/include/CPen.h \
-		../../CQUtil/include/CQUtilMeta.h
+		../../CQUtil/include/CQUtilMeta.h \
+		svg/picker_on_svg.h \
+		../../CQUtil/include/CQPixmapCache.h \
+		svg/picker_off_svg.h \
+		xbm/spy_cursor.xbm
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ../obj/CQPicker.o CQPicker.cpp
 
 ../obj/moc_CQMetaEditModel.o: .moc/moc_CQMetaEditModel.cpp 
