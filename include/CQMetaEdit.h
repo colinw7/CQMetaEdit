@@ -45,6 +45,8 @@ class CQMetaEdit : public QFrame {
 
   void snapshotSlot();
 
+  void focusChangedSlot(QWidget *oldW, QWidget *newW);
+
  private:
   typedef QPointer<QObject> ObjectP;
 
@@ -62,6 +64,7 @@ class CQMetaEdit : public QFrame {
   CQMetaWidgetTree*   widgetTree_     { nullptr };
   CQMetaEditOptions*  options_        { nullptr };
   CQMetaEditPalette*  palette_        { nullptr };
+  QLabel*             focusLabel_     { nullptr };
 };
 
 #endif

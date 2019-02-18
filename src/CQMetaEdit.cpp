@@ -10,6 +10,7 @@
 #include <CQPicker.h>
 #include <CQLinkLabel.h>
 
+#include <QApplication>
 #include <QTabWidget>
 #include <QLineEdit>
 #include <QToolButton>
@@ -152,6 +153,24 @@ CQMetaEdit(QWidget *parent) :
   connect(snapButton, SIGNAL(clicked()), this, SLOT(snapshotSlot()));
 
   tab->setCornerWidget(snapButton);
+
+  //----
+
+  QFrame *statusBar = new QFrame;
+
+  QHBoxLayout *statusLayout = new QHBoxLayout(statusBar);
+
+  focusLabel_ = new QLabel;
+
+  statusLayout->addWidget(focusLabel_);
+  statusLayout->addStretch();
+
+  layout->addWidget(statusBar);
+
+  //----
+
+  connect(qApp, SIGNAL(focusChanged(QWidget *, QWidget *)),
+          this, SLOT(focusChangedSlot(QWidget *, QWidget *)));
 }
 
 void
@@ -294,4 +313,11 @@ snapshotSlot()
   painter.end();
 
   image.save("snapshot.png");
+}
+
+void
+CQMetaEdit::
+focusChangedSlot(QWidget *, QWidget *newW)
+{
+  focusLabel_->setText(CQUtil::fullName(newW));
 }

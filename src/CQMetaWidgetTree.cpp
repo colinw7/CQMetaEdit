@@ -26,7 +26,7 @@ mouseDoubleClickEvent(QMouseEvent *e)
 {
   QModelIndex ind = indexAt(e->pos());
 
-  std::cerr << "mouseDoubleClickEvent: " << ind.row() << " " << ind.column() << std::endl;
+  //std::cerr << "mouseDoubleClickEvent: " << ind.row() << " " << ind.column() << std::endl;
 
   if (ind.column() == 0) {
     QWidget *w = model_->indexWidget(ind);

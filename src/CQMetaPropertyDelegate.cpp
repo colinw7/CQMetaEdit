@@ -1,9 +1,12 @@
 #include <CQMetaPropertyDelegate.h>
 #include <CQMetaPropertyTree.h>
 #include <CQMetaEdit.h>
+
 #include <CQColorChooser.h>
 #include <CQFontChooser.h>
+#include <CQIntegerEdit.h>
 #include <CQUtil.h>
+
 #include <QCheckBox>
 #include <QLineEdit>
 #include <QComboBox>
@@ -155,8 +158,13 @@ createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &i
 
         return edit;
       }
+      // int line edit
       else {
-        return nullptr;
+        CQIntegerEdit *edit = new CQIntegerEdit(parent);
+
+        edit->setAutoFillBackground(true);
+
+        return edit;
       }
     }
     else if (value.type() == QVariant::String) {
@@ -196,6 +204,7 @@ createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &i
   }
 }
 
+// set editor from model
 void
 CQMetaPropertyDelegate::
 setEditorData(QWidget *w, const QModelIndex &index) const
@@ -207,6 +216,7 @@ setEditorData(QWidget *w, const QModelIndex &index) const
 
     if      (value.type() == QVariant::Bool) {
       QCheckBox *edit = qobject_cast<QCheckBox *>(w);
+      assert(edit);
 
       bool b = index.model()->data(index, Qt::EditRole).toBool();
 
@@ -217,6 +227,7 @@ setEditorData(QWidget *w, const QModelIndex &index) const
     else if (value.type() == QVariant::Int) {
       if (CQUtil::getPropertyValueIsEnum(tree_->object(), index.row(), edit->inherited())) {
         QComboBox *edit = qobject_cast<QComboBox *>(w);
+        assert(edit);
 
         int value = index.model()->data(index, Qt::EditRole).toInt();
 
@@ -225,9 +236,18 @@ setEditorData(QWidget *w, const QModelIndex &index) const
         if (ind >= 0)
           edit->setCurrentIndex(ind);
       }
+      else {
+        CQIntegerEdit *edit = qobject_cast<CQIntegerEdit *>(w);
+        assert(edit);
+
+        int value = index.model()->data(index, Qt::EditRole).toInt();
+
+        edit->setValue(value);
+      }
     }
     else if (value.type() == QVariant::String) {
       QLineEdit *edit = qobject_cast<QLineEdit *>(w);
+      assert(edit);
 
       QString text = index.model()->data(index, Qt::EditRole).toString();
 
@@ -235,6 +255,7 @@ setEditorData(QWidget *w, const QModelIndex &index) const
     }
     else if (value.type() == QVariant::String) {
       QLineEdit *edit = qobject_cast<QLineEdit *>(w);
+      assert(edit);
 
       QString text = index.model()->data(index, Qt::EditRole).toString();
 
@@ -242,6 +263,7 @@ setEditorData(QWidget *w, const QModelIndex &index) const
     }
     else if (value.type() == QVariant::Color) {
       CQColorChooser *edit = qobject_cast<CQColorChooser *>(w);
+      assert(edit);
 
       QColor color = index.model()->data(index, Qt::EditRole).value<QColor>();
 
@@ -249,6 +271,7 @@ setEditorData(QWidget *w, const QModelIndex &index) const
     }
     else if (value.type() == QVariant::Font) {
       CQFontChooser *edit = qobject_cast<CQFontChooser *>(w);
+      assert(edit);
 
       QFont font = index.model()->data(index, Qt::EditRole).value<QFont>();
 
@@ -256,6 +279,7 @@ setEditorData(QWidget *w, const QModelIndex &index) const
     }
     else if (value.type() == QVariant::UserType) {
       QLineEdit *edit = qobject_cast<QLineEdit *>(w);
+      assert(edit);
 
       QVariant var = index.model()->data(index, Qt::EditRole);
 
@@ -273,6 +297,7 @@ setEditorData(QWidget *w, const QModelIndex &index) const
   }
 }
 
+// set model from editor
 void
 CQMetaPropertyDelegate::
 setModelData(QWidget *w, QAbstractItemModel *model, const QModelIndex &index) const
@@ -284,12 +309,14 @@ setModelData(QWidget *w, QAbstractItemModel *model, const QModelIndex &index) co
 
     if      (value.type() == QVariant::Bool) {
       QCheckBox *edit = qobject_cast<QCheckBox *>(w);
+      assert(edit);
 
       model->setData(index, edit->isChecked(), Qt::EditRole);
     }
     else if (value.type() == QVariant::Int) {
       if (CQUtil::getPropertyValueIsEnum(tree_->object(), index.row(), edit->inherited())) {
         QComboBox *edit = qobject_cast<QComboBox *>(w);
+        assert(edit);
 
         int ind = edit->currentIndex();
 
@@ -297,24 +324,36 @@ setModelData(QWidget *w, QAbstractItemModel *model, const QModelIndex &index) co
 
         model->setData(index, value, Qt::EditRole);
       }
+      else {
+        CQIntegerEdit *edit = qobject_cast<CQIntegerEdit *>(w);
+        assert(edit);
+
+        int value = edit->getValue();
+
+        model->setData(index, value, Qt::EditRole);
+      }
     }
     else if (value.type() == QVariant::String) {
       QLineEdit *edit = qobject_cast<QLineEdit *>(w);
+      assert(edit);
 
       model->setData(index, edit->text(), Qt::EditRole);
     }
     else if (value.type() == QVariant::Color) {
       CQColorChooser *edit = qobject_cast<CQColorChooser *>(w);
+      assert(edit);
 
       model->setData(index, edit->color(), Qt::EditRole);
     }
     else if (value.type() == QVariant::Font) {
       CQFontChooser *edit = qobject_cast<CQFontChooser *>(w);
+      assert(edit);
 
       model->setData(index, edit->font(), Qt::EditRole);
     }
     else if (value.type() == QVariant::UserType) {
       QLineEdit *edit = qobject_cast<QLineEdit *>(w);
+      assert(edit);
 
       QVariant var = index.model()->data(index, Qt::EditRole);
 

@@ -12,6 +12,7 @@
  + focus order
  + widget monitor
  + trace events
+ + cursor image
 
 ## Meta Property ##
  + isFlag (or set of enum values)
