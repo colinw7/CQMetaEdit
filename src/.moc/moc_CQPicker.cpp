@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'CQPicker.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.5.1)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.9.5)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,12 +12,14 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'CQPicker.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.5.1. It"
+#error "This file was generated using the moc from 5.9.5. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
 
 QT_BEGIN_MOC_NAMESPACE
+QT_WARNING_PUSH
+QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_CQPicker_t {
     QByteArrayData data[18];
     char stringdata0[166];
@@ -132,53 +134,60 @@ void CQPicker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, vo
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
-        void **func = reinterpret_cast<void **>(_a[1]);
         {
             typedef void (CQPicker::*_t)(QObject * );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&CQPicker::objectTouched)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&CQPicker::objectTouched)) {
                 *result = 0;
+                return;
             }
         }
         {
             typedef void (CQPicker::*_t)(QWidget * );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&CQPicker::widgetTouched)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&CQPicker::widgetTouched)) {
                 *result = 1;
+                return;
             }
         }
         {
             typedef void (CQPicker::*_t)();
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&CQPicker::startPick)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&CQPicker::startPick)) {
                 *result = 2;
+                return;
             }
         }
         {
             typedef void (CQPicker::*_t)();
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&CQPicker::endPick)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&CQPicker::endPick)) {
                 *result = 3;
+                return;
             }
         }
         {
             typedef void (CQPicker::*_t)(int , int , int , int );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&CQPicker::position)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&CQPicker::position)) {
                 *result = 4;
+                return;
             }
         }
         {
             typedef void (CQPicker::*_t)(int , int );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&CQPicker::globalPosition)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&CQPicker::globalPosition)) {
                 *result = 5;
+                return;
             }
         }
         {
             typedef void (CQPicker::*_t)(QObject * );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&CQPicker::objectPicked)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&CQPicker::objectPicked)) {
                 *result = 6;
+                return;
             }
         }
         {
             typedef void (CQPicker::*_t)(QWidget * );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&CQPicker::widgetPicked)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&CQPicker::widgetPicked)) {
                 *result = 7;
+                return;
             }
         }
     }
@@ -206,7 +215,7 @@ void CQPicker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, vo
 
 const QMetaObject CQPicker::staticMetaObject = {
     { &QLabel::staticMetaObject, qt_meta_stringdata_CQPicker.data,
-      qt_meta_data_CQPicker,  qt_static_metacall, Q_NULLPTR, Q_NULLPTR}
+      qt_meta_data_CQPicker,  qt_static_metacall, nullptr, nullptr}
 };
 
 
@@ -217,9 +226,9 @@ const QMetaObject *CQPicker::metaObject() const
 
 void *CQPicker::qt_metacast(const char *_clname)
 {
-    if (!_clname) return Q_NULLPTR;
+    if (!_clname) return nullptr;
     if (!strcmp(_clname, qt_meta_stringdata_CQPicker.stringdata0))
-        return static_cast<void*>(const_cast< CQPicker*>(this));
+        return static_cast<void*>(this);
     return QLabel::qt_metacast(_clname);
 }
 
@@ -260,54 +269,55 @@ int CQPicker::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 // SIGNAL 0
 void CQPicker::objectTouched(QObject * _t1)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 
 // SIGNAL 1
 void CQPicker::widgetTouched(QWidget * _t1)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 1, _a);
 }
 
 // SIGNAL 2
 void CQPicker::startPick()
 {
-    QMetaObject::activate(this, &staticMetaObject, 2, Q_NULLPTR);
+    QMetaObject::activate(this, &staticMetaObject, 2, nullptr);
 }
 
 // SIGNAL 3
 void CQPicker::endPick()
 {
-    QMetaObject::activate(this, &staticMetaObject, 3, Q_NULLPTR);
+    QMetaObject::activate(this, &staticMetaObject, 3, nullptr);
 }
 
 // SIGNAL 4
 void CQPicker::position(int _t1, int _t2, int _t3, int _t4)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)), const_cast<void*>(reinterpret_cast<const void*>(&_t4)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)), const_cast<void*>(reinterpret_cast<const void*>(&_t4)) };
     QMetaObject::activate(this, &staticMetaObject, 4, _a);
 }
 
 // SIGNAL 5
 void CQPicker::globalPosition(int _t1, int _t2)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
     QMetaObject::activate(this, &staticMetaObject, 5, _a);
 }
 
 // SIGNAL 6
 void CQPicker::objectPicked(QObject * _t1)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 6, _a);
 }
 
 // SIGNAL 7
 void CQPicker::widgetPicked(QWidget * _t1)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 7, _a);
 }
+QT_WARNING_POP
 QT_END_MOC_NAMESPACE

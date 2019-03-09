@@ -146,17 +146,27 @@ createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &i
     else if (value.type() == QVariant::Int) {
       // enum - create combobox
       if (CQUtil::getPropertyValueIsEnum(tree_->object(), index.row(), edit->inherited())) {
-        QStringList names  =
-          CQUtil::getMetaPropertyEnumNames (tree_->object(), index.row(), edit->inherited());
-        QList<int>  values =
-          CQUtil::getMetaPropertyEnumValues(tree_->object(), index.row(), edit->inherited());
+        if (! CQUtil::getPropertyValueIsFlag(tree_->object(), index.row(), edit->inherited())) {
+          QStringList names;
+          QList<int>  values;
 
-        QComboBox *edit = new QComboBox(parent);
+          CQUtil::getMetaPropertyEnumNameValues(tree_->object(), index.row(), edit->inherited(),
+                                                names, values);
 
-        for (int i = 0; i < names.size(); ++i)
-          edit->addItem(names[i], values[i]);
+          QComboBox *edit = new QComboBox(parent);
 
-        return edit;
+          for (int i = 0; i < names.size(); ++i)
+            edit->addItem(names[i], values[i]);
+
+          return edit;
+        }
+        else {
+          QLineEdit *edit = new QLineEdit(parent);
+
+          edit->setAutoFillBackground(true);
+
+          return edit;
+        }
       }
       // int line edit
       else {
@@ -209,10 +219,10 @@ void
 CQMetaPropertyDelegate::
 setEditorData(QWidget *w, const QModelIndex &index) const
 {
-  CQMetaEdit *edit = tree_->edit();
+  CQMetaEdit *metaEdit = tree_->edit();
 
   if (index.column() == 2) {
-    QVariant value = CQUtil::getPropertyValue(tree_->object(), index.row(), edit->inherited());
+    QVariant value = CQUtil::getPropertyValue(tree_->object(), index.row(), metaEdit->inherited());
 
     if      (value.type() == QVariant::Bool) {
       QCheckBox *edit = qobject_cast<QCheckBox *>(w);
@@ -225,16 +235,32 @@ setEditorData(QWidget *w, const QModelIndex &index) const
       edit->setText(edit->isChecked() ? "true" : "false");
     }
     else if (value.type() == QVariant::Int) {
-      if (CQUtil::getPropertyValueIsEnum(tree_->object(), index.row(), edit->inherited())) {
-        QComboBox *edit = qobject_cast<QComboBox *>(w);
-        assert(edit);
+      if (CQUtil::getPropertyValueIsEnum(tree_->object(), index.row(), metaEdit->inherited())) {
+        if (! CQUtil::getPropertyValueIsFlag(tree_->object(), index.row(), metaEdit->inherited())) {
+          QComboBox *edit = qobject_cast<QComboBox *>(w);
+          assert(edit);
 
-        int value = index.model()->data(index, Qt::EditRole).toInt();
+          int value = index.model()->data(index, Qt::EditRole).toInt();
 
-        int ind = edit->findData(value);
+          int ind = edit->findData(value);
 
-        if (ind >= 0)
-          edit->setCurrentIndex(ind);
+          if (ind >= 0)
+            edit->setCurrentIndex(ind);
+        }
+        else {
+          QLineEdit *edit = qobject_cast<QLineEdit *>(w);
+          assert(edit);
+
+          int value = index.model()->data(index, Qt::EditRole).toInt();
+
+          QString str;
+
+          if (! CQUtil::enumPropertyValueToString(tree_->object(), index.row(),
+                                                  metaEdit->inherited(), value, str))
+            return;
+
+          edit->setText(str);
+        }
       }
       else {
         CQIntegerEdit *edit = qobject_cast<CQIntegerEdit *>(w);
@@ -302,10 +328,10 @@ void
 CQMetaPropertyDelegate::
 setModelData(QWidget *w, QAbstractItemModel *model, const QModelIndex &index) const
 {
-  CQMetaEdit *edit = tree_->edit();
+  CQMetaEdit *metaEdit = tree_->edit();
 
   if (index.column() == 2) {
-    QVariant value = CQUtil::getPropertyValue(tree_->object(), index.row(), edit->inherited());
+    QVariant value = CQUtil::getPropertyValue(tree_->object(), index.row(), metaEdit->inherited());
 
     if      (value.type() == QVariant::Bool) {
       QCheckBox *edit = qobject_cast<QCheckBox *>(w);
@@ -314,15 +340,29 @@ setModelData(QWidget *w, QAbstractItemModel *model, const QModelIndex &index) co
       model->setData(index, edit->isChecked(), Qt::EditRole);
     }
     else if (value.type() == QVariant::Int) {
-      if (CQUtil::getPropertyValueIsEnum(tree_->object(), index.row(), edit->inherited())) {
-        QComboBox *edit = qobject_cast<QComboBox *>(w);
-        assert(edit);
+      if (CQUtil::getPropertyValueIsEnum(tree_->object(), index.row(), metaEdit->inherited())) {
+        if (! CQUtil::getPropertyValueIsFlag(tree_->object(), index.row(), metaEdit->inherited())) {
+          QComboBox *edit = qobject_cast<QComboBox *>(w);
+          assert(edit);
 
-        int ind = edit->currentIndex();
+          int ind = edit->currentIndex();
 
-        int value = edit->itemData(ind).toInt();
+          int value = edit->itemData(ind).toInt();
 
-        model->setData(index, value, Qt::EditRole);
+          model->setData(index, value, Qt::EditRole);
+        }
+        else {
+          QLineEdit *edit = qobject_cast<QLineEdit *>(w);
+          assert(edit);
+
+          int value;
+
+          if (! CQUtil::enumPropertyStringToValue(tree_->object(), index.row(),
+                                                  metaEdit->inherited(), edit->text(), value))
+            return;
+
+          model->setData(index, value, Qt::EditRole);
+        }
       }
       else {
         CQIntegerEdit *edit = qobject_cast<CQIntegerEdit *>(w);
