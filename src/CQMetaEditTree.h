@@ -14,7 +14,7 @@ class CQMetaEditTree : public CQTreeView {
 
   virtual ~CQMetaEditTree() { }
 
-  CQMetaEdit *edit() const { return edit_; }
+  CQMetaEdit *metaEdit() const;
 
   QObject *object() const;
 
@@ -24,7 +24,9 @@ class CQMetaEditTree : public CQTreeView {
   void endResetModel();
 
  protected:
-  CQMetaEdit* edit_ { nullptr };
+  using CQMetaEditP = QPointer<CQMetaEdit>;
+
+  CQMetaEditP edit_;
 };
 
 #endif

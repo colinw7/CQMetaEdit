@@ -14,11 +14,18 @@ CQMetaEditTree(CQMetaEdit *edit) :
   header()->setStretchLastSection(true);
 }
 
+CQMetaEdit *
+CQMetaEditTree::
+metaEdit() const
+{
+  return edit_.data();
+}
+
 QObject *
 CQMetaEditTree::
 object() const
 {
-  return edit_->object();
+  return (edit_ ? edit_->object() : nullptr);
 }
 
 void

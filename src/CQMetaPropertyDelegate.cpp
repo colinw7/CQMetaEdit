@@ -5,9 +5,9 @@
 #include <CQColorChooser.h>
 #include <CQFontChooser.h>
 #include <CQIntegerEdit.h>
+#include <CQCheckBox.h>
 #include <CQUtil.h>
 
-#include <QCheckBox>
 #include <QLineEdit>
 #include <QComboBox>
 #include <QPainter>
@@ -22,7 +22,7 @@ void
 CQMetaPropertyDelegate::
 paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-  CQMetaEdit *edit = tree_->edit();
+  CQMetaEdit *edit = tree_->metaEdit();
 
   if      (index.column() == 0) {
     CQUtil::PropInfo propInfo;
@@ -123,7 +123,7 @@ QWidget *
 CQMetaPropertyDelegate::
 createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &index) const
 {
-  CQMetaEdit *edit = tree_->edit();
+  CQMetaEdit *edit = tree_->metaEdit();
 
   CQUtil::PropInfo propInfo;
 
@@ -137,7 +137,7 @@ createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &i
 
     // bool - create toggle
     if      (value.type() == QVariant::Bool) {
-      QCheckBox *edit = new QCheckBox(parent);
+      CQCheckBox *edit = new CQCheckBox(parent);
 
       edit->setAutoFillBackground(true);
 
@@ -219,20 +219,18 @@ void
 CQMetaPropertyDelegate::
 setEditorData(QWidget *w, const QModelIndex &index) const
 {
-  CQMetaEdit *metaEdit = tree_->edit();
+  CQMetaEdit *metaEdit = tree_->metaEdit();
 
   if (index.column() == 2) {
     QVariant value = CQUtil::getPropertyValue(tree_->object(), index.row(), metaEdit->inherited());
 
     if      (value.type() == QVariant::Bool) {
-      QCheckBox *edit = qobject_cast<QCheckBox *>(w);
+      CQCheckBox *edit = qobject_cast<CQCheckBox *>(w);
       assert(edit);
 
       bool b = index.model()->data(index, Qt::EditRole).toBool();
 
       edit->setChecked(b);
-
-      edit->setText(edit->isChecked() ? "true" : "false");
     }
     else if (value.type() == QVariant::Int) {
       if (CQUtil::getPropertyValueIsEnum(tree_->object(), index.row(), metaEdit->inherited())) {
@@ -328,13 +326,13 @@ void
 CQMetaPropertyDelegate::
 setModelData(QWidget *w, QAbstractItemModel *model, const QModelIndex &index) const
 {
-  CQMetaEdit *metaEdit = tree_->edit();
+  CQMetaEdit *metaEdit = tree_->metaEdit();
 
   if (index.column() == 2) {
     QVariant value = CQUtil::getPropertyValue(tree_->object(), index.row(), metaEdit->inherited());
 
     if      (value.type() == QVariant::Bool) {
-      QCheckBox *edit = qobject_cast<QCheckBox *>(w);
+      CQCheckBox *edit = qobject_cast<CQCheckBox *>(w);
       assert(edit);
 
       model->setData(index, edit->isChecked(), Qt::EditRole);

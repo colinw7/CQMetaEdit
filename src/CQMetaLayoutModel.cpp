@@ -44,7 +44,7 @@ rowCount(const QModelIndex &parent) const
   if (! layout)
     return 0;
 
-  CQMetaEdit *edit = tree_->edit();
+  CQMetaEdit *edit = tree_->metaEdit();
 
   int numProp = CQUtil::getNumProperties(layout, edit->inherited());
 
@@ -93,7 +93,7 @@ data(const QModelIndex &index, int role) const
     return QVariant();
 
   if (role == Qt::DisplayRole || role == Qt::EditRole) {
-    CQMetaEdit *edit = tree_->edit();
+    CQMetaEdit *edit = tree_->metaEdit();
 
     int numProp = CQUtil::getNumProperties(layout, edit->inherited());
 
@@ -153,7 +153,7 @@ QLayout *
 CQMetaLayoutModel::
 layoutObject() const
 {
-  CQMetaEdit *edit = tree_->edit();
+  CQMetaEdit *edit = tree_->metaEdit();
 
   return (edit->widget() ? edit->widget()->layout() : 0);
 }

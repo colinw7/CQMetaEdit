@@ -36,7 +36,7 @@ rowCount(const QModelIndex &parent) const
   if (parent.column() > 0)
     return 0;
 
-  CQMetaEdit *edit = tree_->edit();
+  CQMetaEdit *edit = tree_->metaEdit();
 
   return CQUtil::getNumProperties(tree_->object(), edit->inherited());
 }
@@ -75,7 +75,7 @@ data(const QModelIndex &index, int role) const
     return QVariant();
 
   if (role == Qt::DisplayRole || role == Qt::EditRole) {
-    CQMetaEdit *edit = tree_->edit();
+    CQMetaEdit *edit = tree_->metaEdit();
 
     if      (index.column() == 0) {
       QString name = CQUtil::getPropertyName(tree_->object(), index.row(), edit->inherited());
@@ -120,7 +120,7 @@ setData(const QModelIndex &index, const QVariant &value, int role)
     return false;
 
   if (role == Qt::DisplayRole || role == Qt::EditRole) {
-    CQMetaEdit *edit = tree_->edit();
+    CQMetaEdit *edit = tree_->metaEdit();
 
     if (index.column() == 2) {
       return CQUtil::setPropertyValue(tree_->object(), index.row(), value, edit->inherited());

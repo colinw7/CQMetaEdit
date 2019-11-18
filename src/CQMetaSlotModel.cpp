@@ -36,7 +36,7 @@ rowCount(const QModelIndex &parent) const
   if (parent.column() > 0)
     return 0;
 
-  CQMetaEdit *edit = tree_->edit();
+  CQMetaEdit *edit = tree_->metaEdit();
 
   return CQUtil::numSlots(tree_->object(), edit->inherited());
 }
@@ -70,7 +70,7 @@ data(const QModelIndex &index, int role) const
   if (! index.isValid())
     return QVariant();
 
-  CQMetaEdit *edit = tree_->edit();
+  CQMetaEdit *edit = tree_->metaEdit();
 
   if (role == Qt::DisplayRole) {
     if (index.column() == 0) {
