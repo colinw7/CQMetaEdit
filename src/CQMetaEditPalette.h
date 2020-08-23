@@ -12,7 +12,7 @@ class CQMetaEditPalette : public QFrame {
   CQMetaEditPalette(CQMetaEdit *edit);
 
  private:
-  void paintEvent(QPaintEvent *);
+  void paintEvent(QPaintEvent *) override;
 
  private:
   CQMetaEdit *edit_ { nullptr };

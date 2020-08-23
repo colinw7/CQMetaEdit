@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'CQPicker.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.9.5)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.12.8)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,7 +12,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'CQPicker.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.9.5. It"
+#error "This file was generated using the moc from 5.12.8. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -62,7 +62,7 @@ QT_MOC_LITERAL(17, 161, 4) // "size"
 static const uint qt_meta_data_CQPicker[] = {
 
  // content:
-       7,       // revision
+       8,       // revision
        0,       // classname
        0,    0, // classinfo
        8,   14, // methods
@@ -101,7 +101,7 @@ static const uint qt_meta_data_CQPicker[] = {
 void CQPicker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
-        CQPicker *_t = static_cast<CQPicker *>(_o);
+        auto *_t = static_cast<CQPicker *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->objectTouched((*reinterpret_cast< QObject*(*)>(_a[1]))); break;
@@ -135,56 +135,56 @@ void CQPicker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, vo
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
         {
-            typedef void (CQPicker::*_t)(QObject * );
+            using _t = void (CQPicker::*)(QObject * );
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&CQPicker::objectTouched)) {
                 *result = 0;
                 return;
             }
         }
         {
-            typedef void (CQPicker::*_t)(QWidget * );
+            using _t = void (CQPicker::*)(QWidget * );
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&CQPicker::widgetTouched)) {
                 *result = 1;
                 return;
             }
         }
         {
-            typedef void (CQPicker::*_t)();
+            using _t = void (CQPicker::*)();
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&CQPicker::startPick)) {
                 *result = 2;
                 return;
             }
         }
         {
-            typedef void (CQPicker::*_t)();
+            using _t = void (CQPicker::*)();
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&CQPicker::endPick)) {
                 *result = 3;
                 return;
             }
         }
         {
-            typedef void (CQPicker::*_t)(int , int , int , int );
+            using _t = void (CQPicker::*)(int , int , int , int );
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&CQPicker::position)) {
                 *result = 4;
                 return;
             }
         }
         {
-            typedef void (CQPicker::*_t)(int , int );
+            using _t = void (CQPicker::*)(int , int );
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&CQPicker::globalPosition)) {
                 *result = 5;
                 return;
             }
         }
         {
-            typedef void (CQPicker::*_t)(QObject * );
+            using _t = void (CQPicker::*)(QObject * );
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&CQPicker::objectPicked)) {
                 *result = 6;
                 return;
             }
         }
         {
-            typedef void (CQPicker::*_t)(QWidget * );
+            using _t = void (CQPicker::*)(QWidget * );
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&CQPicker::widgetPicked)) {
                 *result = 7;
                 return;
@@ -193,7 +193,7 @@ void CQPicker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, vo
     }
 #ifndef QT_NO_PROPERTIES
     else if (_c == QMetaObject::ReadProperty) {
-        CQPicker *_t = static_cast<CQPicker *>(_o);
+        auto *_t = static_cast<CQPicker *>(_o);
         Q_UNUSED(_t)
         void *_v = _a[0];
         switch (_id) {
@@ -201,7 +201,7 @@ void CQPicker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, vo
         default: break;
         }
     } else if (_c == QMetaObject::WriteProperty) {
-        CQPicker *_t = static_cast<CQPicker *>(_o);
+        auto *_t = static_cast<CQPicker *>(_o);
         Q_UNUSED(_t)
         void *_v = _a[0];
         switch (_id) {
@@ -213,10 +213,14 @@ void CQPicker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, vo
 #endif // QT_NO_PROPERTIES
 }
 
-const QMetaObject CQPicker::staticMetaObject = {
-    { &QLabel::staticMetaObject, qt_meta_stringdata_CQPicker.data,
-      qt_meta_data_CQPicker,  qt_static_metacall, nullptr, nullptr}
-};
+QT_INIT_METAOBJECT const QMetaObject CQPicker::staticMetaObject = { {
+    &QLabel::staticMetaObject,
+    qt_meta_stringdata_CQPicker.data,
+    qt_meta_data_CQPicker,
+    qt_static_metacall,
+    nullptr,
+    nullptr
+} };
 
 
 const QMetaObject *CQPicker::metaObject() const
@@ -247,7 +251,7 @@ int CQPicker::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         _id -= 8;
     }
 #ifndef QT_NO_PROPERTIES
-   else if (_c == QMetaObject::ReadProperty || _c == QMetaObject::WriteProperty
+    else if (_c == QMetaObject::ReadProperty || _c == QMetaObject::WriteProperty
             || _c == QMetaObject::ResetProperty || _c == QMetaObject::RegisterPropertyMetaType) {
         qt_static_metacall(this, _c, _id, _a);
         _id -= 1;

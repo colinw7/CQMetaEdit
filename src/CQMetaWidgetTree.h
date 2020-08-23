@@ -12,7 +12,7 @@ class CQMetaWidgetTree : public CQMetaEditTree {
  public:
   CQMetaWidgetTree(CQMetaEdit *edit);
 
-  void mouseDoubleClickEvent(QMouseEvent *);
+  void mouseDoubleClickEvent(QMouseEvent *) override;
 
  private:
   CQMetaWidgetModel*    model_    { nullptr };

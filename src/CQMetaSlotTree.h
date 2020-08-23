@@ -12,6 +12,8 @@ class CQMetaSlotTree : public CQMetaEditTree {
  public:
   CQMetaSlotTree(CQMetaEdit *edit);
 
+  void mouseDoubleClickEvent(QMouseEvent *event) override;
+
  private:
   CQMetaSlotModel    *model_    { nullptr };
   CQMetaSlotDelegate *delegate_ { nullptr };
