@@ -19,7 +19,7 @@
 #include <QPainter>
 
 #include <svg/icon_svg.h>
-#include <svg/image_svg.h>
+#include <svg/image_bw_svg.h>
 
 CQMetaEdit::
 CQMetaEdit(QWidget *parent) :
@@ -148,7 +148,7 @@ CQMetaEdit(QWidget *parent) :
 
   QToolButton *snapButton = new QToolButton;
 
-  snapButton->setIcon(CQPixmapCacheInst->getIcon("IMAGE"));
+  snapButton->setIcon(CQPixmapCacheInst->getIcon("IMAGE_BW"));
 
   connect(snapButton, SIGNAL(clicked()), this, SLOT(snapshotSlot()));
 
