@@ -9,6 +9,7 @@
 #include <CQUtil.h>
 #include <CQPicker.h>
 #include <CQLinkLabel.h>
+#include <CQIconButton.h>
 
 #include <QApplication>
 #include <QTabWidget>
@@ -19,7 +20,9 @@
 #include <QPainter>
 
 #include <svg/icon_svg.h>
-#include <svg/image_bw_svg.h>
+
+#include <svg/image_bw_light_svg.h>
+#include <svg/image_bw_dark_svg.h>
 
 CQMetaEdit::
 CQMetaEdit(QWidget *parent) :
@@ -146,9 +149,9 @@ CQMetaEdit(QWidget *parent) :
 
   //----
 
-  QToolButton *snapButton = new QToolButton;
+  auto *snapButton = new CQIconButton;
 
-  snapButton->setIcon(CQPixmapCacheInst->getIcon("IMAGE_BW"));
+  snapButton->setIcon("IMAGE_BW");
 
   connect(snapButton, SIGNAL(clicked()), this, SLOT(snapshotSlot()));
 

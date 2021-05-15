@@ -31,7 +31,7 @@ class CQMetaEdit : public QFrame {
 
   QWidget *widget() const;
 
-  QSize sizeHint() const { return QSize(800, 800); }
+  QSize sizeHint() const override { return QSize(800, 800); }
 
  public slots:
   void setInherited(bool);
