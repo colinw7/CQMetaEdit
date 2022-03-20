@@ -13,8 +13,10 @@ class CQMetaEditOptions;
 class CQMetaEditPalette;
 class CQPicker;
 class CQLinkLabel;
+
 class QLineEdit;
 class QLabel;
+class QRubberBand;
 
 class CQMetaEdit : public QFrame {
   Q_OBJECT
@@ -39,6 +41,8 @@ class CQMetaEdit : public QFrame {
  private slots:
   void loadObjectName();
 
+  void showObject();
+
   void loadParent();
 
   void pickObject(QObject *object);
@@ -55,7 +59,9 @@ class CQMetaEdit : public QFrame {
   CQPicker*           picker_         { nullptr };
   QLineEdit*          objectNameEdit_ { nullptr };
   QLabel*             typeLabel_      { nullptr };
+  CQLinkLabel*        nameLink_       { nullptr };
   CQLinkLabel*        parentLink_     { nullptr };
+  QLabel*             parentLabel_    { nullptr };
   QLabel*             layoutLabel_    { nullptr };
   CQMetaPropertyTree* propertyTree_   { nullptr };
   CQMetaLayoutTree*   layoutTree_     { nullptr };
@@ -65,6 +71,7 @@ class CQMetaEdit : public QFrame {
   CQMetaEditOptions*  options_        { nullptr };
   CQMetaEditPalette*  palette_        { nullptr };
   QLabel*             focusLabel_     { nullptr };
+  QRubberBand*        rubberBand_     { nullptr };
 };
 
 #endif

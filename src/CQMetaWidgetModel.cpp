@@ -32,7 +32,7 @@ parent(const QModelIndex &index) const
 
     for (int i = 0; i < children.size(); ++i) {
       if (children[i] == parent)
-        return createIndex(i, 0, (void *) parent);
+        return createIndex(i, 0, static_cast<void *>(parent));
     }
   }
 
@@ -101,7 +101,7 @@ index(int row, int column, const QModelIndex &parent) const
       continue;
 
     if (row == num)
-      return createIndex(row, column, (void *) w);
+      return createIndex(row, column, static_cast<void *>(w));
 
     ++num;
   }

@@ -18,6 +18,7 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QPainter>
+#include <QRubberBand>
 
 #include <svg/icon_svg.h>
 
@@ -33,89 +34,85 @@ CQMetaEdit(QWidget *parent) :
 
   setObjectName("edit");
 
-  QVBoxLayout *layout = new QVBoxLayout(this);
-  layout->setMargin(0); layout->setSpacing(2);
+  auto *layout = CQUtil::makeLayout<QVBoxLayout>(this, 0, 2);
 
   //---
 
-  QFrame *objectFrame = new QFrame;
-
-  objectFrame->setObjectName("objectFrame");
+  auto *objectFrame = CQUtil::makeWidget<QFrame>("objectFrame");
 
   layout->addWidget(objectFrame);
 
-  QVBoxLayout *objectLayout = new QVBoxLayout(objectFrame);
-  objectLayout->setMargin(2); objectLayout->setSpacing(2);
+  auto *objectLayout = CQUtil::makeLayout<QVBoxLayout>(objectFrame, 2, 2);
 
   //---
 
-  QFrame *objectDetailsFrame = new QFrame;
-
-  objectDetailsFrame->setObjectName("objectDetailsFrame");
+  auto *objectDetailsFrame = CQUtil::makeWidget<QFrame>("objectDetailsFrame");
 
   objectLayout->addWidget(objectDetailsFrame);
 
-  QGridLayout *objectDetailsLayout = new QGridLayout(objectDetailsFrame);
-  objectDetailsLayout->setMargin(0); objectDetailsLayout->setSpacing(2);
+  auto *objectDetailsLayout = CQUtil::makeLayout<QGridLayout>(objectDetailsFrame, 0, 2);
 
   //---
 
   QFontMetrics fm(font());
 
-  picker_ = new CQPicker;
+  picker_ = CQUtil::makeWidget<CQPicker>();
 
   picker_->setSize(3*fm.height());
+  picker_->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
   connect(picker_, SIGNAL(objectPicked(QObject *)), this, SLOT(pickObject(QObject *)));
 
-  objectDetailsLayout->addWidget(picker_, 0, 0, 3, 1);
+  objectDetailsLayout->addWidget(picker_, 0, 0, 4, 1);
 
   //---
 
-  objectNameEdit_ = new QLineEdit;
+  nameLink_ = CQUtil::makeWidget<CQLinkLabel>("nameLink");
+  nameLink_->setText("Name");
 
-  objectNameEdit_->setObjectName("objectNameEdit");
+  connect(nameLink_, SIGNAL(clicked()), this, SLOT(showObject()));
 
-  objectDetailsLayout->addWidget(new QLabel("Name"), 0, 1);
-  objectDetailsLayout->addWidget(objectNameEdit_   , 0, 2);
+  objectNameEdit_ = CQUtil::makeWidget<QLineEdit>("objectNameEdit");
+
+  objectDetailsLayout->addWidget(nameLink_      , 0, 1);
+  objectDetailsLayout->addWidget(objectNameEdit_, 0, 2, 1, 2);
 
   connect(objectNameEdit_, SIGNAL(returnPressed()), this, SLOT(loadObjectName()));
 
   //---
 
-  typeLabel_ = new QLabel;
+  typeLabel_ = CQUtil::makeWidget<QLabel>("typeLabel");
 
-  typeLabel_->setObjectName("typeLabel");
-
-  objectDetailsLayout->addWidget(new QLabel("Type"), 1, 1);
-  objectDetailsLayout->addWidget(typeLabel_        , 1, 2);
+  objectDetailsLayout->addWidget(CQUtil::makeLabelWidget<QLabel>("Type", "label"), 1, 1);
+  objectDetailsLayout->addWidget(typeLabel_                                      , 1, 2, 1, 2);
 
   //---
 
-  parentLink_ = new CQLinkLabel;
-
-  parentLink_->setObjectName("parentLink");
+  parentLink_ = CQUtil::makeWidget<CQLinkLabel>("parentLink");
   parentLink_->setText("<no name>");
+
+  parentLabel_ = CQUtil::makeWidget<QLabel>("parentLabel");
 
   connect(parentLink_, SIGNAL(clicked()), this, SLOT(loadParent()));
 
-  objectDetailsLayout->addWidget(new QLabel("Parent"), 2, 1);
-  objectDetailsLayout->addWidget(parentLink_         , 2, 2);
+  objectDetailsLayout->addWidget(CQUtil::makeLabelWidget<QLabel>("Parent", "label"), 2, 1);
+  objectDetailsLayout->addWidget(parentLink_                                       , 2, 2);
+  objectDetailsLayout->addWidget(parentLabel_                                      , 2, 3);
 
   //---
 
-  layoutLabel_ = new QLabel;
+  layoutLabel_ = CQUtil::makeWidget<QLabel>("layoutLabel");
 
-  layoutLabel_->setObjectName("layoutLabel");
+  objectDetailsLayout->addWidget(CQUtil::makeLabelWidget<QLabel>("Layout", "label"), 3, 1);
+  objectDetailsLayout->addWidget(layoutLabel_                                      , 3, 2, 1, 2);
 
-  objectDetailsLayout->addWidget(new QLabel("Layout"), 3, 1);
-  objectDetailsLayout->addWidget(layoutLabel_        , 3, 2);
+  //---
+
+  objectDetailsLayout->setColumnStretch(2, 1);
 
   //------
 
-  QTabWidget *tab = new QTabWidget;
-
-  tab->setObjectName("tab");
+  auto *tab = CQUtil::makeWidget<QTabWidget>("tab");
 
   layout->addWidget(tab);
 
@@ -149,7 +146,7 @@ CQMetaEdit(QWidget *parent) :
 
   //----
 
-  auto *snapButton = new CQIconButton;
+  auto *snapButton = CQUtil::makeWidget<CQIconButton>();
 
   snapButton->setIcon("IMAGE_BW");
 
@@ -159,11 +156,11 @@ CQMetaEdit(QWidget *parent) :
 
   //----
 
-  QFrame *statusBar = new QFrame;
+  auto *statusBar = CQUtil::makeWidget<QFrame>("statusBar");
 
-  QHBoxLayout *statusLayout = new QHBoxLayout(statusBar);
+  auto *statusLayout = CQUtil::makeLayout<QHBoxLayout>(statusBar, 2, 2);
 
-  focusLabel_ = new QLabel;
+  focusLabel_ = CQUtil::makeWidget<QLabel>("label");
 
   statusLayout->addWidget(focusLabel_);
   statusLayout->addStretch();
@@ -193,7 +190,7 @@ void
 CQMetaEdit::
 loadObjectName()
 {
-  QObject *object = CQUtil::nameToObject(objectNameEdit_->text());
+  auto *object = CQUtil::nameToObject(objectNameEdit_->text());
 
   if (object)
     setObject(object);
@@ -201,9 +198,29 @@ loadObjectName()
 
 void
 CQMetaEdit::
+showObject()
+{
+  if (! widget())
+    return;
+
+  auto rect  = widget()->rect();
+  auto rtl   = widget()->mapToGlobal(rect.topLeft());
+  auto rbr   = widget()->mapToGlobal(rect.bottomRight());
+  auto rrect = QRect(rtl, rbr);
+
+  if (! rubberBand_)
+    rubberBand_ = new QRubberBand(QRubberBand::Rectangle);
+
+  rubberBand_->setGeometry(rrect);
+
+  rubberBand_->show();
+}
+
+void
+CQMetaEdit::
 loadParent()
 {
-  QWidget *parent = (widget() ? widget()->parentWidget() : nullptr);
+  auto *parent = (widget() ? widget()->parentWidget() : nullptr);
 
   setObject(parent);
 }
@@ -226,6 +243,9 @@ void
 CQMetaEdit::
 setObject(QObject *obj)
 {
+  if (obj == object_)
+    return;
+
   object_ = obj;
 
   if (object()) {
@@ -242,24 +262,30 @@ setObject(QObject *obj)
   parentLink_->setText  ("<no name>");
   parentLink_->setLinked(false);
 
+  parentLabel_->setText("");
+
   if      (widget()) {
     if (widget()->parentWidget()) {
-      QString name = widget()->parentWidget()->objectName();
+      auto name = widget()->parentWidget()->objectName();
 
       if (name != "") {
         parentLink_->setText  (name);
         parentLink_->setLinked(true);
       }
+
+      parentLabel_->setText(QString("(%1)").arg(CQUtil::className(widget()->parentWidget())));
     }
   }
   else if (object()) {
     if (object()->parent()) {
-      QString name = object()->parent()->objectName();
+      auto name = object()->parent()->objectName();
 
       if (name != "") {
         parentLink_->setText  (name);
         parentLink_->setLinked(true);
       }
+
+      parentLabel_->setText(QString("(%1)").arg(CQUtil::className(object()->parent())));
     }
   }
 
@@ -267,8 +293,8 @@ setObject(QObject *obj)
 
   if (widget()) {
     if (widget()->layout()) {
-      QString objName   = widget()->layout()->objectName();
-      QString className = CQUtil::className(widget()->layout());
+      auto objName   = widget()->layout()->objectName();
+      auto className = CQUtil::className(widget()->layout());
 
       if (objName == "")
         objName = "<no name>";
@@ -284,6 +310,12 @@ setObject(QObject *obj)
   signalTree_  ->updateObject();
   slotTree_    ->updateObject();
   widgetTree_  ->updateObject();
+
+  //---
+
+  if (rubberBand_)
+    rubberBand_->hide();
+
 }
 
 QWidget *
@@ -297,7 +329,7 @@ void
 CQMetaEdit::
 snapshotSlot()
 {
-  QWidget *widget = this->widget();
+  auto *widget = this->widget();
 
   if (! widget)
     return;
@@ -305,7 +337,7 @@ snapshotSlot()
   int w = widget->width ();
   int h = widget->height();
 
-  QImage image = QImage(QSize(w, h), QImage::Format_ARGB32);
+  auto image = QImage(QSize(w, h), QImage::Format_ARGB32);
 
   QPainter painter;
 
