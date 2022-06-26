@@ -5,6 +5,7 @@
 #include <CQColorChooser.h>
 #include <CQFontChooser.h>
 #include <CQIntegerEdit.h>
+#include <CQRealEdit.h>
 #include <CQCheckBox.h>
 #include <CQUtil.h>
 
@@ -137,7 +138,7 @@ createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &i
 
     // bool - create toggle
     if      (value.type() == QVariant::Bool) {
-      CQCheckBox *edit = new CQCheckBox(parent);
+      auto *edit = new CQCheckBox(parent);
 
       edit->setAutoFillBackground(true);
 
@@ -153,7 +154,7 @@ createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &i
           CQUtil::getMetaPropertyEnumNameValues(tree_->object(), index.row(), edit->inherited(),
                                                 names, values);
 
-          QComboBox *edit = new QComboBox(parent);
+          auto *edit = new QComboBox(parent);
 
           for (int i = 0; i < names.size(); ++i)
             edit->addItem(names[i], values[i]);
@@ -161,7 +162,7 @@ createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &i
           return edit;
         }
         else {
-          QLineEdit *edit = new QLineEdit(parent);
+          auto *edit = new QLineEdit(parent);
 
           edit->setAutoFillBackground(true);
 
@@ -170,36 +171,43 @@ createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &i
       }
       // int line edit
       else {
-        CQIntegerEdit *edit = new CQIntegerEdit(parent);
+        auto *edit = new CQIntegerEdit(parent);
 
         edit->setAutoFillBackground(true);
 
         return edit;
       }
     }
+    else if (value.type() == QVariant::Double) {
+      auto *edit = new CQRealEdit(parent);
+
+      edit->setAutoFillBackground(true);
+
+      return edit;
+    }
     else if (value.type() == QVariant::String) {
-      QLineEdit *edit = new QLineEdit(parent);
+      auto *edit = new QLineEdit(parent);
 
       edit->setAutoFillBackground(true);
 
       return edit;
     }
     else if (value.type() == QVariant::Color) {
-      CQColorChooser *edit = new CQColorChooser(parent);
+      auto *edit = new CQColorChooser(parent);
 
       edit->setAutoFillBackground(true);
 
       return edit;
     }
     else if (value.type() == QVariant::Font) {
-      CQFontChooser *edit = new CQFontChooser(parent);
+      auto *edit = new CQFontChooser(parent);
 
       edit->setAutoFillBackground(true);
 
       return edit;
     }
     else if (value.type() == QVariant::UserType) {
-      QLineEdit *edit = new QLineEdit(parent);
+      auto *edit = new QLineEdit(parent);
 
       edit->setAutoFillBackground(true);
 
@@ -225,7 +233,7 @@ setEditorData(QWidget *w, const QModelIndex &index) const
     QVariant value = CQUtil::getPropertyValue(tree_->object(), index.row(), metaEdit->inherited());
 
     if      (value.type() == QVariant::Bool) {
-      CQCheckBox *edit = qobject_cast<CQCheckBox *>(w);
+      auto *edit = qobject_cast<CQCheckBox *>(w);
       assert(edit);
 
       bool b = index.model()->data(index, Qt::EditRole).toBool();
@@ -235,7 +243,7 @@ setEditorData(QWidget *w, const QModelIndex &index) const
     else if (value.type() == QVariant::Int) {
       if (CQUtil::getPropertyValueIsEnum(tree_->object(), index.row(), metaEdit->inherited())) {
         if (! CQUtil::getPropertyValueIsFlag(tree_->object(), index.row(), metaEdit->inherited())) {
-          QComboBox *edit = qobject_cast<QComboBox *>(w);
+          auto *edit = qobject_cast<QComboBox *>(w);
           assert(edit);
 
           int value = index.model()->data(index, Qt::EditRole).toInt();
@@ -246,7 +254,7 @@ setEditorData(QWidget *w, const QModelIndex &index) const
             edit->setCurrentIndex(ind);
         }
         else {
-          QLineEdit *edit = qobject_cast<QLineEdit *>(w);
+          auto *edit = qobject_cast<QLineEdit *>(w);
           assert(edit);
 
           int value = index.model()->data(index, Qt::EditRole).toInt();
@@ -261,7 +269,7 @@ setEditorData(QWidget *w, const QModelIndex &index) const
         }
       }
       else {
-        CQIntegerEdit *edit = qobject_cast<CQIntegerEdit *>(w);
+        auto *edit = qobject_cast<CQIntegerEdit *>(w);
         assert(edit);
 
         int value = index.model()->data(index, Qt::EditRole).toInt();
@@ -269,8 +277,16 @@ setEditorData(QWidget *w, const QModelIndex &index) const
         edit->setValue(value);
       }
     }
+    else if (value.type() == QVariant::Double) {
+      auto *edit = qobject_cast<CQRealEdit *>(w);
+      assert(edit);
+
+      double value = index.model()->data(index, Qt::EditRole).toDouble();
+
+      edit->setValue(value);
+    }
     else if (value.type() == QVariant::String) {
-      QLineEdit *edit = qobject_cast<QLineEdit *>(w);
+      auto *edit = qobject_cast<QLineEdit *>(w);
       assert(edit);
 
       QString text = index.model()->data(index, Qt::EditRole).toString();
@@ -278,7 +294,7 @@ setEditorData(QWidget *w, const QModelIndex &index) const
       edit->setText(text);
     }
     else if (value.type() == QVariant::String) {
-      QLineEdit *edit = qobject_cast<QLineEdit *>(w);
+      auto *edit = qobject_cast<QLineEdit *>(w);
       assert(edit);
 
       QString text = index.model()->data(index, Qt::EditRole).toString();
@@ -286,7 +302,7 @@ setEditorData(QWidget *w, const QModelIndex &index) const
       edit->setText(text);
     }
     else if (value.type() == QVariant::Color) {
-      CQColorChooser *edit = qobject_cast<CQColorChooser *>(w);
+      auto *edit = qobject_cast<CQColorChooser *>(w);
       assert(edit);
 
       QColor color = index.model()->data(index, Qt::EditRole).value<QColor>();
@@ -294,7 +310,7 @@ setEditorData(QWidget *w, const QModelIndex &index) const
       edit->setColor(color);
     }
     else if (value.type() == QVariant::Font) {
-      CQFontChooser *edit = qobject_cast<CQFontChooser *>(w);
+      auto *edit = qobject_cast<CQFontChooser *>(w);
       assert(edit);
 
       QFont font = index.model()->data(index, Qt::EditRole).value<QFont>();
@@ -302,7 +318,7 @@ setEditorData(QWidget *w, const QModelIndex &index) const
       edit->setFont(font);
     }
     else if (value.type() == QVariant::UserType) {
-      QLineEdit *edit = qobject_cast<QLineEdit *>(w);
+      auto *edit = qobject_cast<QLineEdit *>(w);
       assert(edit);
 
       QVariant var = index.model()->data(index, Qt::EditRole);
@@ -332,7 +348,7 @@ setModelData(QWidget *w, QAbstractItemModel *model, const QModelIndex &index) co
     QVariant value = CQUtil::getPropertyValue(tree_->object(), index.row(), metaEdit->inherited());
 
     if      (value.type() == QVariant::Bool) {
-      CQCheckBox *edit = qobject_cast<CQCheckBox *>(w);
+      auto *edit = qobject_cast<CQCheckBox *>(w);
       assert(edit);
 
       model->setData(index, edit->isChecked(), Qt::EditRole);
@@ -340,7 +356,7 @@ setModelData(QWidget *w, QAbstractItemModel *model, const QModelIndex &index) co
     else if (value.type() == QVariant::Int) {
       if (CQUtil::getPropertyValueIsEnum(tree_->object(), index.row(), metaEdit->inherited())) {
         if (! CQUtil::getPropertyValueIsFlag(tree_->object(), index.row(), metaEdit->inherited())) {
-          QComboBox *edit = qobject_cast<QComboBox *>(w);
+          auto *edit = qobject_cast<QComboBox *>(w);
           assert(edit);
 
           int ind = edit->currentIndex();
@@ -350,7 +366,7 @@ setModelData(QWidget *w, QAbstractItemModel *model, const QModelIndex &index) co
           model->setData(index, value, Qt::EditRole);
         }
         else {
-          QLineEdit *edit = qobject_cast<QLineEdit *>(w);
+          auto *edit = qobject_cast<QLineEdit *>(w);
           assert(edit);
 
           int value;
@@ -363,7 +379,7 @@ setModelData(QWidget *w, QAbstractItemModel *model, const QModelIndex &index) co
         }
       }
       else {
-        CQIntegerEdit *edit = qobject_cast<CQIntegerEdit *>(w);
+        auto *edit = qobject_cast<CQIntegerEdit *>(w);
         assert(edit);
 
         int value = edit->getValue();
@@ -371,26 +387,34 @@ setModelData(QWidget *w, QAbstractItemModel *model, const QModelIndex &index) co
         model->setData(index, value, Qt::EditRole);
       }
     }
+    else if (value.type() == QVariant::Double) {
+      auto *edit = qobject_cast<CQRealEdit *>(w);
+      assert(edit);
+
+      double value = edit->getValue();
+
+      model->setData(index, value, Qt::EditRole);
+    }
     else if (value.type() == QVariant::String) {
-      QLineEdit *edit = qobject_cast<QLineEdit *>(w);
+      auto *edit = qobject_cast<QLineEdit *>(w);
       assert(edit);
 
       model->setData(index, edit->text(), Qt::EditRole);
     }
     else if (value.type() == QVariant::Color) {
-      CQColorChooser *edit = qobject_cast<CQColorChooser *>(w);
+      auto *edit = qobject_cast<CQColorChooser *>(w);
       assert(edit);
 
       model->setData(index, edit->color(), Qt::EditRole);
     }
     else if (value.type() == QVariant::Font) {
-      CQFontChooser *edit = qobject_cast<CQFontChooser *>(w);
+      auto *edit = qobject_cast<CQFontChooser *>(w);
       assert(edit);
 
       model->setData(index, edit->font(), Qt::EditRole);
     }
     else if (value.type() == QVariant::UserType) {
-      QLineEdit *edit = qobject_cast<QLineEdit *>(w);
+      auto *edit = qobject_cast<QLineEdit *>(w);
       assert(edit);
 
       QVariant var = index.model()->data(index, Qt::EditRole);
