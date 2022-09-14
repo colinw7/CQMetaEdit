@@ -39,7 +39,7 @@ data(const QModelIndex &index, int role) const
     if (var.isValid()) {
       QFontMetrics fm(tree_->font());
 
-      return QSize(fm.width(var.toString()) + 8, fm.height() + 2);
+      return QSize(fm.horizontalAdvance(var.toString()) + 8, fm.height() + 2);
     }
   }
 

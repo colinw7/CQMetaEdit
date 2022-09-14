@@ -146,7 +146,7 @@ sizeHint() const
   // size hint is size of text label with border
   QFontMetrics fm(font());
 
-  return QSize(fm.width(text()) + 4, fm.height() + 4);
+  return QSize(fm.horizontalAdvance(text()) + 4, fm.height() + 4);
 }
 
 QSize
@@ -156,7 +156,7 @@ minimumSizeHint() const
   // minimum size hint is size of text label with no border
   QFontMetrics fm(font());
 
-  return QSize(fm.width(text()), fm.height());
+  return QSize(fm.horizontalAdvance(text()), fm.height());
 }
 
 void

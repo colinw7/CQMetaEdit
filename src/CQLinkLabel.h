@@ -46,17 +46,17 @@ class CQLinkLabel : public QWidget {
 
   bool isActive() const { return active_; }
 
-  void enterEvent(QEvent *e);
-  void leaveEvent(QEvent *e);
+  void enterEvent(QEvent *e) override;
+  void leaveEvent(QEvent *e) override;
 
-  void paintEvent(QPaintEvent *);
+  void paintEvent(QPaintEvent *) override;
 
-  void mousePressEvent(QMouseEvent *);
-  void mouseReleaseEvent(QMouseEvent *);
-  void mouseDoubleClickEvent(QMouseEvent *);
+  void mousePressEvent(QMouseEvent *) override;
+  void mouseReleaseEvent(QMouseEvent *) override;
+  void mouseDoubleClickEvent(QMouseEvent *) override;
 
-  QSize sizeHint() const;
-  QSize minimumSizeHint() const;
+  QSize sizeHint() const override;
+  QSize minimumSizeHint() const override;
 
   QString encodeText(const QString &text) const;
 

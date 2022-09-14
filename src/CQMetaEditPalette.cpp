@@ -55,14 +55,14 @@ paintEvent(QPaintEvent *)
   columnWidths[0] = 0;
 
   for (int r = 0; r < roleNames.length(); ++r)
-    columnWidths[0] = std::max(columnWidths[0], fm.width(roleNames[r]));
+    columnWidths[0] = std::max(columnWidths[0], fm.horizontalAdvance(roleNames[r]));
 
   for (int c = 1; c < 4; ++c)
-    columnWidths[c] = fm.width(groupNames[c - 1]);
+    columnWidths[c] = fm.horizontalAdvance(groupNames[c - 1]);
 
   int maxColumnWidth = std::max(std::max(columnWidths[1], columnWidths[2]), columnWidths[3]);
 
-  maxColumnWidth = std::max(maxColumnWidth, fm.width("#FFFFFF"));
+  maxColumnWidth = std::max(maxColumnWidth, fm.horizontalAdvance("#FFFFFF"));
 
   //---
 
@@ -114,7 +114,7 @@ paintEvent(QPaintEvent *)
 
           painter.setPen(colorTextColor);
 
-          int w = fm.width(color.name());
+          int w = fm.horizontalAdvance(color.name());
 
           int dx1 = (maxColumnWidth + xm - w)/2;
 
