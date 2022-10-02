@@ -6,6 +6,8 @@
 class CQMetaWidgetTree;
 
 class CQMetaWidgetModel : public CQMetaEditModel {
+  Q_OBJECT
+
  public:
   CQMetaWidgetModel(CQMetaWidgetTree *tree);
 
@@ -22,6 +24,9 @@ class CQMetaWidgetModel : public CQMetaEditModel {
   QVariant data(const QModelIndex &index, int role) const;
 
   QWidget *indexWidget(const QModelIndex &index) const;
+
+ private:
+  std::vector<QObject *> objectChildren(QObject *obj) const;
 
  private:
   CQMetaWidgetTree *tree_ { nullptr };

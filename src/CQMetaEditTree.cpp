@@ -32,7 +32,7 @@ void
 CQMetaEditTree::
 updateObject()
 {
-  CQMetaEditModel *model = qobject_cast<CQMetaEditModel *>(this->model());
+  auto *model = qobject_cast<CQMetaEditModel *>(this->model());
 
   model->beginResetModel();
 

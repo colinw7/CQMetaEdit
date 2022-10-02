@@ -12,6 +12,7 @@
 #include <QLineEdit>
 #include <QComboBox>
 #include <QPainter>
+#include <QBitmap>
 
 CQMetaPropertyDelegate::
 CQMetaPropertyDelegate(CQMetaPropertyTree *tree) :
@@ -61,14 +62,14 @@ paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &
     else if (value.type() == QVariant::Cursor) {
       QCursor cursor = value.value<QCursor>();
 
-      const QBitmap* bm   = cursor.bitmap();
-      const QBitmap* mask = cursor.mask();
-      QPixmap        pm   = cursor.pixmap();
+      QBitmap bm   = cursor.bitmap(Qt::ReturnByValue);
+      QBitmap mask = cursor.mask(Qt::ReturnByValue);
+      QPixmap pm   = cursor.pixmap();
 
-      if (bm) {
+      if (! bm.isNull()) {
         QString text = "bitmap";
 
-        if (mask)
+        if (! mask.isNull())
           text += ":mask";
 
         drawDisplay(painter, option, option.rect, text);

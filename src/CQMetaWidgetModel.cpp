@@ -15,24 +15,28 @@ parent(const QModelIndex &index) const
   if (! index.isValid())
     return QModelIndex();
 
-  QWidget *child = indexWidget(index);
+  auto *child = indexWidget(index);
 
   if (! child)
     return QModelIndex();
 
-  QWidget *parent = child->parentWidget();
+  auto *parent = child->parentWidget();
 
   if (! parent)
     return QModelIndex();
 
-  QWidget *parentParent = parent->parentWidget();
+  auto *parentParent = parent->parentWidget();
 
   if (parentParent) {
-    const QObjectList &children = parentParent->children();
+    const auto &children = objectChildren(parentParent);
 
-    for (int i = 0; i < children.size(); ++i) {
-      if (children[i] == parent)
+    int i = 0;
+
+    for (auto *child : children) {
+      if (child == parent)
         return createIndex(i, 0, static_cast<void *>(parent));
+
+      ++i;
     }
   }
 
@@ -60,20 +64,9 @@ rowCount(const QModelIndex &parent) const
   if (! parentObject)
     return 0;
 
-  const QObjectList &children = parentObject->children();
+  const auto &children = objectChildren(parentObject);
 
-  int num = 0;
-
-  for (int i = 0; i < children.size(); ++i) {
-    QWidget *w = qobject_cast<QWidget *>(children[i]);
-
-    if (! w)
-      continue;
-
-    ++num;
-  }
-
-  return num;
+  return children.size();
 }
 
 QModelIndex
@@ -90,18 +83,13 @@ index(int row, int column, const QModelIndex &parent) const
   if (! parentObject)
     return createIndex(row, column, nullptr);
 
-  const QObjectList &children = parentObject->children();
+  const auto &children = objectChildren(parentObject);
 
   int num = 0;
 
-  for (int i = 0; i < children.size(); ++i) {
-    QWidget *w = qobject_cast<QWidget *>(children[i]);
-
-    if (! w)
-      continue;
-
+  for (auto *child : children) {
     if (row == num)
-      return createIndex(row, column, static_cast<void *>(w));
+      return createIndex(row, column, static_cast<void *>(child));
 
     ++num;
   }
@@ -132,7 +120,7 @@ data(const QModelIndex &index, int role) const
 
   if (role == Qt::DisplayRole) {
     if      (index.column() == 0) {
-      QWidget *object = indexWidget(index);
+      auto *object = indexWidget(index);
 
       QString name = (object ? object->objectName() : QString());
 
@@ -142,9 +130,9 @@ data(const QModelIndex &index, int role) const
       return name;
     }
     else if (index.column() == 1) {
-      QWidget *object = indexWidget(index);
+      auto *object = indexWidget(index);
 
-      QString name = (object ? CQUtil::className(object) : QString());
+      auto name = (object ? CQUtil::className(object) : QString());
 
       if (name == "")
         name = "<no type>";
@@ -167,4 +155,27 @@ indexWidget(const QModelIndex &index) const
     return nullptr;
 
   return static_cast<QWidget *>(index.internalPointer());
+}
+
+std::vector<QObject *>
+CQMetaWidgetModel::
+objectChildren(QObject *obj) const
+{
+  std::vector<QObject *> objs;
+
+  const auto &children = obj->children();
+
+  for (int i = 0; i < children.size(); ++i) {
+    auto *w = qobject_cast<QWidget *>(children[i]);
+    if (! w) continue;
+
+    objs.push_back(w);
+  }
+
+  auto *view = qobject_cast<QAbstractItemView *>(obj);
+
+  if (view)
+    objs.push_back(view->model());
+
+  return objs;
 }

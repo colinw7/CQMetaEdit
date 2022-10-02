@@ -5,6 +5,7 @@ CQMetaEditModel::
 CQMetaEditModel(CQMetaEditTree *tree) :
  tree_(tree)
 {
+  setObjectName("metaEditModel");
 }
 
 void
