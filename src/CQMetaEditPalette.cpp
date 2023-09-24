@@ -1,5 +1,7 @@
 #include <CQMetaEditPalette.h>
 #include <CQMetaEdit.h>
+
+#include <QApplication>
 #include <QPainter>
 
 CQMetaEditPalette::
@@ -66,8 +68,10 @@ paintEvent(QPaintEvent *)
 
   //---
 
-  QColor textColor = palette().color(QPalette::Active, QPalette::Text);
-  QColor lineColor = palette().color(QPalette::Active, QPalette::Dark);
+  auto pal = (edit_->widget() ? edit_->widget()->palette() : qApp->palette());
+
+  auto textColor = pal.color(QPalette::Active, QPalette::Text);
+  auto lineColor = pal.color(QPalette::Active, QPalette::Dark);
 
   painter.setPen(textColor);
 
@@ -101,7 +105,7 @@ paintEvent(QPaintEvent *)
           painter.drawText(x + dx, y + fm.ascent() + 1, roleNames[r - 1]);
         }
         else {
-          QColor color = palette().color(groups[c - 1], roles[r - 1]);
+          QColor color = pal.color(groups[c - 1], roles[r - 1]);
 
           QRect rect(x - 1, y, maxColumnWidth + xm - 1, fm.height() + 4);
 
@@ -110,7 +114,7 @@ paintEvent(QPaintEvent *)
           //int gray = qGray(color.red(), color.green(), color.blue());
           //painter.setPen(gray > 128 ? Qt::black : Qt::white);
 
-          QColor colorTextColor = palette().color(groups[c - 1], textRoles[r - 1]);
+          QColor colorTextColor = pal.color(groups[c - 1], textRoles[r - 1]);
 
           painter.setPen(colorTextColor);
 

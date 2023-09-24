@@ -24,13 +24,13 @@ void
 CQMetaPropertyDelegate::
 paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-  CQMetaEdit *edit = tree_->metaEdit();
+  auto *edit = tree_->metaEdit();
 
   if      (index.column() == 0) {
     CQUtil::PropInfo propInfo;
 
     if (CQUtil::getPropertyInfo(tree_->object(), index.row(), &propInfo, edit->inherited())) {
-      QStyleOptionViewItem option1 = option;
+      auto option1 = option;
 
       if (! propInfo.isWritable())
         option1.font.setItalic(true);
@@ -44,7 +44,7 @@ paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &
     QItemDelegate::paint(painter, option, index);
   }
   else if (index.column() == 2) {
-    QVariant value = CQUtil::getPropertyValue(tree_->object(), index.row(), edit->inherited());
+    auto value = CQUtil::getPropertyValue(tree_->object(), index.row(), edit->inherited());
 
     if      (value.type() == QVariant::Rect  || value.type() == QVariant::RectF ||
              value.type() == QVariant::Size  || value.type() == QVariant::SizeF ||
@@ -60,11 +60,11 @@ paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &
       }
     }
     else if (value.type() == QVariant::Cursor) {
-      QCursor cursor = value.value<QCursor>();
+      auto cursor = value.value<QCursor>();
 
-      QBitmap bm   = cursor.bitmap(Qt::ReturnByValue);
-      QBitmap mask = cursor.mask(Qt::ReturnByValue);
-      QPixmap pm   = cursor.pixmap();
+      auto bm   = cursor.bitmap(Qt::ReturnByValue);
+      auto mask = cursor.mask(Qt::ReturnByValue);
+      auto pm   = cursor.pixmap();
 
       if (! bm.isNull()) {
         QString text = "bitmap";
@@ -78,18 +78,18 @@ paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &
         painter->drawPixmap(option.rect.topLeft(), pm);
       }
       else {
-        Qt::CursorShape shape = cursor.shape();
+        auto shape = cursor.shape();
 
-        QString text = QString("%1").arg(shape);
+        auto text = QString("%1").arg(shape);
 
         drawDisplay(painter, option, option.rect, text);
       }
     }
     else if (value.type() == QVariant::Icon) {
-      QIcon icon = value.value<QIcon>();
+      auto icon = value.value<QIcon>();
 
       if (! icon.isNull()) {
-        QPixmap pm = icon.pixmap(option.rect.size());
+        auto pm = icon.pixmap(option.rect.size());
 
         if (! pm.isNull())
           painter->drawPixmap(option.rect.topLeft(), pm);
@@ -125,7 +125,7 @@ QWidget *
 CQMetaPropertyDelegate::
 createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &index) const
 {
-  CQMetaEdit *edit = tree_->metaEdit();
+  auto *edit = tree_->metaEdit();
 
   CQUtil::PropInfo propInfo;
 
@@ -135,13 +135,17 @@ createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &i
   }
 
   if (index.column() == 2) {
-    QVariant value = CQUtil::getPropertyValue(tree_->object(), index.row(), edit->inherited());
+    auto value = CQUtil::getPropertyValue(tree_->object(), index.row(), edit->inherited());
 
     // bool - create toggle
     if      (value.type() == QVariant::Bool) {
       auto *edit = new CQCheckBox(parent);
 
       edit->setAutoFillBackground(true);
+
+      edit->setProperty("modelIndex", QVariant(index));
+
+      connect(edit, SIGNAL(stateChanged(int)), this, SLOT(editChanged()));
 
       return edit;
     }
@@ -160,6 +164,10 @@ createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &i
           for (int i = 0; i < names.size(); ++i)
             edit->addItem(names[i], values[i]);
 
+          edit->setProperty("modelIndex", QVariant(index));
+
+          connect(edit, SIGNAL(currentIndexChanged(const QString &)), this, SLOT(editChanged()));
+
           return edit;
         }
         else {
@@ -176,6 +184,10 @@ createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &i
 
         edit->setAutoFillBackground(true);
 
+        edit->setProperty("modelIndex", QVariant(index));
+
+        connect(edit, SIGNAL(editingFinished()), this, SLOT(editChanged()));
+
         return edit;
       }
     }
@@ -191,12 +203,20 @@ createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &i
 
       edit->setAutoFillBackground(true);
 
+      edit->setProperty("modelIndex", QVariant(index));
+
+      connect(edit, SIGNAL(editingFinished()), this, SLOT(editChanged()));
+
       return edit;
     }
     else if (value.type() == QVariant::Color) {
       auto *edit = new CQColorChooser(parent);
 
       edit->setAutoFillBackground(true);
+
+      edit->setProperty("modelIndex", QVariant(index));
+
+      connect(edit, SIGNAL(colorChanged(const QColor&)), this, SLOT(editChanged()));
 
       return edit;
     }
@@ -205,6 +225,10 @@ createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &i
 
       edit->setAutoFillBackground(true);
 
+      edit->setProperty("modelIndex", QVariant(index));
+
+      connect(edit, SIGNAL(fontChanged(const QString&)), this, SLOT(editChanged()));
+
       return edit;
     }
     else if (value.type() == QVariant::UserType) {
@@ -212,10 +236,18 @@ createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &i
 
       edit->setAutoFillBackground(true);
 
+      edit->setProperty("modelIndex", QVariant(index));
+
+      connect(edit, SIGNAL(editingFinished()), this, SLOT(editChanged()));
+
       return edit;
     }
     else {
-      return nullptr;
+      auto *edit = new QLineEdit(parent);
+
+      edit->setAutoFillBackground(true);
+
+      return edit;
     }
   }
   else {
@@ -228,10 +260,10 @@ void
 CQMetaPropertyDelegate::
 setEditorData(QWidget *w, const QModelIndex &index) const
 {
-  CQMetaEdit *metaEdit = tree_->metaEdit();
+  auto *metaEdit = tree_->metaEdit();
 
   if (index.column() == 2) {
-    QVariant value = CQUtil::getPropertyValue(tree_->object(), index.row(), metaEdit->inherited());
+    auto value = CQUtil::getPropertyValue(tree_->object(), index.row(), metaEdit->inherited());
 
     if      (value.type() == QVariant::Bool) {
       auto *edit = qobject_cast<CQCheckBox *>(w);
@@ -290,7 +322,7 @@ setEditorData(QWidget *w, const QModelIndex &index) const
       auto *edit = qobject_cast<QLineEdit *>(w);
       assert(edit);
 
-      QString text = index.model()->data(index, Qt::EditRole).toString();
+      auto text = index.model()->data(index, Qt::EditRole).toString();
 
       edit->setText(text);
     }
@@ -298,7 +330,7 @@ setEditorData(QWidget *w, const QModelIndex &index) const
       auto *edit = qobject_cast<QLineEdit *>(w);
       assert(edit);
 
-      QString text = index.model()->data(index, Qt::EditRole).toString();
+      auto text = index.model()->data(index, Qt::EditRole).toString();
 
       edit->setText(text);
     }
@@ -306,7 +338,7 @@ setEditorData(QWidget *w, const QModelIndex &index) const
       auto *edit = qobject_cast<CQColorChooser *>(w);
       assert(edit);
 
-      QColor color = index.model()->data(index, Qt::EditRole).value<QColor>();
+      auto color = index.model()->data(index, Qt::EditRole).value<QColor>();
 
       edit->setColor(color);
     }
@@ -314,7 +346,7 @@ setEditorData(QWidget *w, const QModelIndex &index) const
       auto *edit = qobject_cast<CQFontChooser *>(w);
       assert(edit);
 
-      QFont font = index.model()->data(index, Qt::EditRole).value<QFont>();
+      auto font = index.model()->data(index, Qt::EditRole).value<QFont>();
 
       edit->setFont(font);
     }
@@ -322,7 +354,7 @@ setEditorData(QWidget *w, const QModelIndex &index) const
       auto *edit = qobject_cast<QLineEdit *>(w);
       assert(edit);
 
-      QVariant var = index.model()->data(index, Qt::EditRole);
+      auto var = index.model()->data(index, Qt::EditRole);
 
       QString text;
 
@@ -330,7 +362,15 @@ setEditorData(QWidget *w, const QModelIndex &index) const
         edit->setText(text);
     }
     else {
-      return;
+      auto *edit = qobject_cast<QLineEdit *>(w);
+      assert(edit);
+
+      auto var = index.model()->data(index, Qt::EditRole);
+
+      QString text;
+
+      if (CQUtil::variantToString(var, text))
+        edit->setText(text);
     }
   }
   else {
@@ -343,10 +383,10 @@ void
 CQMetaPropertyDelegate::
 setModelData(QWidget *w, QAbstractItemModel *model, const QModelIndex &index) const
 {
-  CQMetaEdit *metaEdit = tree_->metaEdit();
+  auto *metaEdit = tree_->metaEdit();
 
   if (index.column() == 2) {
-    QVariant value = CQUtil::getPropertyValue(tree_->object(), index.row(), metaEdit->inherited());
+    auto value = CQUtil::getPropertyValue(tree_->object(), index.row(), metaEdit->inherited());
 
     if      (value.type() == QVariant::Bool) {
       auto *edit = qobject_cast<CQCheckBox *>(w);
@@ -418,16 +458,35 @@ setModelData(QWidget *w, QAbstractItemModel *model, const QModelIndex &index) co
       auto *edit = qobject_cast<QLineEdit *>(w);
       assert(edit);
 
-      QVariant var = index.model()->data(index, Qt::EditRole);
+      auto var = index.model()->data(index, Qt::EditRole);
 
       if (CQUtil::userVariantFromString(var, edit->text()))
         model->setData(index, var, Qt::EditRole);
     }
     else {
-      return;
+      auto *edit = qobject_cast<QLineEdit *>(w);
+      assert(edit);
+
+      auto var = index.model()->data(index, Qt::EditRole);
+
+      if (CQUtil::variantFromString(var, edit->text()))
+        model->setData(index, var, Qt::EditRole);
     }
   }
   else {
     return;
   }
+}
+
+void
+CQMetaPropertyDelegate::
+editChanged()
+{
+  auto *w = qobject_cast<QWidget *>(sender());
+  if (! w) return;
+
+  auto ind = w->property("modelIndex").value<QModelIndex>();
+
+  if (ind.isValid())
+    setModelData(w, const_cast<QAbstractItemModel *>(ind.model()), ind);
 }

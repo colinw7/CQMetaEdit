@@ -39,7 +39,7 @@ rowCount(const QModelIndex &parent) const
   if (parent.column() > 0)
     return 0;
 
-  QLayout *layout = layoutObject();
+  auto *layout = layoutObject();
 
   if (! layout)
     return 0;
@@ -87,7 +87,7 @@ data(const QModelIndex &index, int role) const
   if (! index.isValid())
     return QVariant();
 
-  QLayout *layout = layoutObject();
+  auto *layout = layoutObject();
 
   if (! layout)
     return QVariant();
@@ -126,7 +126,7 @@ data(const QModelIndex &index, int role) const
       }
     }
     else {
-      QGridLayout *gridLayout = qobject_cast<QGridLayout *>(layout);
+      auto *gridLayout = qobject_cast<QGridLayout *>(layout);
 
       if (gridLayout) {
         if      (index.row() == numProp) {
@@ -153,7 +153,7 @@ QLayout *
 CQMetaLayoutModel::
 layoutObject() const
 {
-  CQMetaEdit *edit = tree_->metaEdit();
+  auto *edit = tree_->metaEdit();
 
-  return (edit->widget() ? edit->widget()->layout() : 0);
+  return (edit->widget() ? edit->widget()->layout() : nullptr);
 }

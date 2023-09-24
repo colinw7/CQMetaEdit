@@ -19,6 +19,7 @@ CQMetaEditOptions.cpp \
 CQMetaEditPalette.cpp \
 CQMetaEditTree.cpp \
 CQMetaLayoutDelegate.cpp \
+CQMetaLayoutEditor.cpp \
 CQMetaLayoutModel.cpp \
 CQMetaLayoutTree.cpp \
 CQMetaPropertyDelegate.cpp \
@@ -42,6 +43,7 @@ CQMetaEditOptions.h \
 CQMetaEditPalette.h \
 CQMetaEditTree.h \
 CQMetaLayoutDelegate.h \
+CQMetaLayoutEditor.h \
 CQMetaLayoutModel.h \
 CQMetaLayoutTree.h \
 CQMetaPropertyDelegate.h \

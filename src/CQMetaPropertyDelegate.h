@@ -22,6 +22,9 @@ class CQMetaPropertyDelegate : public QItemDelegate {
   void setModelData(QWidget *w, QAbstractItemModel *model,
                     const QModelIndex &index) const override;
 
+ private Q_SLOTS:
+  void editChanged();
+
  private:
   CQMetaPropertyTree *tree_ { nullptr };
 };

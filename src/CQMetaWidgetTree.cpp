@@ -24,13 +24,19 @@ void
 CQMetaWidgetTree::
 mouseDoubleClickEvent(QMouseEvent *e)
 {
-  QModelIndex ind = indexAt(e->pos());
+  auto ind = indexAt(e->pos());
 
   //std::cerr << "mouseDoubleClickEvent: " << ind.row() << " " << ind.column() << std::endl;
 
-  if (ind.column() == 0) {
-    QWidget *w = model_->indexWidget(ind);
+  auto *obj = model_->indexObject(ind);
 
-    edit_->setObject(w);
+  if      (ind.column() == 0) {
+    edit_->setObject(obj);
+  }
+  else if (ind.column() == 1) {
+    auto *w = qobject_cast<QWidget *>(obj);
+
+    if (w)
+      edit_->showWidget(w);
   }
 }

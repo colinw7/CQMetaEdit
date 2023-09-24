@@ -2,6 +2,7 @@
 #include <CQMetaPropertyTree.h>
 #include <CQMetaLayoutTree.h>
 #include <CQMetaSignalTree.h>
+#include <CQMetaLayoutEditor.h>
 #include <CQMetaSlotTree.h>
 #include <CQMetaWidgetTree.h>
 #include <CQMetaEditOptions.h>
@@ -9,6 +10,7 @@
 #include <CQUtil.h>
 #include <CQPicker.h>
 #include <CQLinkLabel.h>
+#include <CQTabSplit.h>
 #include <CQIconButton.h>
 
 #include <QApplication>
@@ -120,9 +122,15 @@ CQMetaEdit(QWidget *parent) :
 
   tab->addTab(propertyTree_, "Properties");
 
-  layoutTree_ = new CQMetaLayoutTree(this);
+  auto *layoutTab = CQUtil::makeWidget<CQTabSplit>("layoutTab");
 
-  tab->addTab(layoutTree_, "Layout");
+  layoutTree_   = new CQMetaLayoutTree(this);
+  layoutEditor_ = new CQMetaLayoutEditor(this);
+
+  layoutTab->addWidget(layoutTree_  , "Properties");
+  layoutTab->addWidget(layoutEditor_, "Editor");
+
+  tab->addTab(layoutTab, "Layout");
 
   signalTree_ = new CQMetaSignalTree(this);
 
@@ -149,6 +157,7 @@ CQMetaEdit(QWidget *parent) :
   auto *snapButton = CQUtil::makeWidget<CQIconButton>();
 
   snapButton->setIcon("IMAGE_BW");
+  snapButton->setToolTip("Save snapshot to snapshot.png");
 
   connect(snapButton, SIGNAL(clicked()), this, SLOT(snapshotSlot()));
 
@@ -200,12 +209,17 @@ void
 CQMetaEdit::
 showObject()
 {
-  if (! widget())
-    return;
+  if (widget())
+    showWidget(widget());
+}
 
-  auto rect  = widget()->rect();
-  auto rtl   = widget()->mapToGlobal(rect.topLeft());
-  auto rbr   = widget()->mapToGlobal(rect.bottomRight());
+void
+CQMetaEdit::
+showWidget(QWidget *widget)
+{
+  auto rect  = widget->rect();
+  auto rtl   = widget->mapToGlobal(rect.topLeft());
+  auto rbr   = widget->mapToGlobal(rect.bottomRight());
   auto rrect = QRect(rtl, rbr);
 
   if (! rubberBand_)
@@ -311,11 +325,14 @@ setObject(QObject *obj)
   slotTree_    ->updateObject();
   widgetTree_  ->updateObject();
 
+  layoutEditor_->updateObject();
+
+  palette_->update();
+
   //---
 
   if (rubberBand_)
     rubberBand_->hide();
-
 }
 
 QWidget *
@@ -330,9 +347,7 @@ CQMetaEdit::
 snapshotSlot()
 {
   auto *widget = this->widget();
-
-  if (! widget)
-    return;
+  if (! widget) return;
 
   int w = widget->width ();
   int h = widget->height();
@@ -354,5 +369,12 @@ void
 CQMetaEdit::
 focusChangedSlot(QWidget *, QWidget *newW)
 {
-  focusLabel_->setText(CQUtil::fullName(newW));
+  auto str  = CQUtil::fullName(newW);
+  auto lstr = str;
+
+  if (lstr.length() > 128)
+    lstr = lstr.right(128) + "...";
+
+  focusLabel_->setText(lstr);
+  focusLabel_->setToolTip(str);
 }

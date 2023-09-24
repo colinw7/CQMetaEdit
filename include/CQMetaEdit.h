@@ -6,6 +6,7 @@
 
 class CQMetaPropertyTree;
 class CQMetaLayoutTree;
+class CQMetaLayoutEditor;
 class CQMetaSignalTree;
 class CQMetaSlotTree;
 class CQMetaWidgetTree;
@@ -24,7 +25,7 @@ class CQMetaEdit : public QFrame {
   Q_PROPERTY(bool inherited READ inherited WRITE setInherited)
 
  public:
-  CQMetaEdit(QWidget *parent=0);
+  CQMetaEdit(QWidget *parent=nullptr);
 
   bool inherited() const { return inherited_; }
 
@@ -33,12 +34,14 @@ class CQMetaEdit : public QFrame {
 
   QWidget *widget() const;
 
+  void showWidget(QWidget *w);
+
   QSize sizeHint() const override { return QSize(800, 800); }
 
- public slots:
+ public Q_SLOTS:
   void setInherited(bool);
 
- private slots:
+ private Q_SLOTS:
   void loadObjectName();
 
   void showObject();
@@ -65,6 +68,7 @@ class CQMetaEdit : public QFrame {
   QLabel*             layoutLabel_    { nullptr };
   CQMetaPropertyTree* propertyTree_   { nullptr };
   CQMetaLayoutTree*   layoutTree_     { nullptr };
+  CQMetaLayoutEditor* layoutEditor_   { nullptr };
   CQMetaSignalTree*   signalTree_     { nullptr };
   CQMetaSlotTree*     slotTree_       { nullptr };
   CQMetaWidgetTree*   widgetTree_     { nullptr };

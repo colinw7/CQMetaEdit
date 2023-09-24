@@ -24,12 +24,14 @@ class CQMetaWidgetModel : public CQMetaEditModel {
   QVariant data(const QModelIndex &index, int role) const override;
 
   QWidget *indexWidget(const QModelIndex &index) const;
+  QObject *indexObject(const QModelIndex &index) const;
 
  private:
   std::vector<QObject *> objectChildren(QObject *obj) const;
 
  private:
   CQMetaWidgetTree *tree_ { nullptr };
+  bool              objectChildren_ { false };
 };
 
 #endif

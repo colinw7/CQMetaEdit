@@ -8,7 +8,7 @@ class CQMetaEditTest : public QFrame {
   Q_PROPERTY(QFont  font  READ font  WRITE setFont )
 
  public:
-  CQMetaEditTest(QWidget *parent=0);
+  CQMetaEditTest(QWidget *parent=nullptr);
 
   const QColor &color() const { return color_; }
   void setColor(const QColor &v) { color_ = v; updateState(); }
@@ -18,7 +18,7 @@ class CQMetaEditTest : public QFrame {
 
   void updateState();
 
-  void paintEvent(QPaintEvent *);
+  void paintEvent(QPaintEvent *) override;
 
  private:
   QColor color_;
